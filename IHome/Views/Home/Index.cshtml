@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewBag.Title = "Select color";
+}
+<div class="half">
+    <div class="colorPicker"></div>
+</div>
+<div id="slider"></div>
+@section Scripts{
+    <script src="~/Scripts/iro.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/roundSlider/1.3.2/roundslider.min.js"></script>
+    <script>
+        $(function () {
+            $("#slider").roundSlider({
+                radius: 85,
+                sliderType: "min-range",
+                value: @ViewBag.CurrentVolume,
+                drag: SetVolume,
+                change: SetVolume
+            });
+            function SetVolume(e) {
+                $.post("@Url.Action("SetVolume")", { "volume": e.value }, function (data) {
+                });
+            }
+
+           @if (ViewBag.Exception == null) {
+                <text>
+                var colorPicker = new iro.ColorPicker(".colorPicker", {
+                    width: 280,
+                    color: "@ViewBag.CurrentColor",
+                    borderWidth: 1,
+                    borderColor: "#fff",
+                });
+
+                colorPicker.on("color:change", function (color) {
+                    $.post("@Url.Action("SetColor")", { "color": color.rgbString }, function (data) {
+                        //alert(data);
+                    });
+                });
+                </text>
+            } else {
+                <text>
+                alert("@ViewBag.Exception");
+                </text>
+            }
+
+        });
+    </script>
+}
