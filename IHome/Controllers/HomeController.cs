@@ -1,4 +1,6 @@
-﻿using Services;
+﻿using DAL;
+using Microsoft.AspNet.Identity.Owin;
+using Services;
 using Services.Entities;
 using Services.Interfaces;
 using System;
@@ -9,6 +11,7 @@ using System.Web.Mvc;
 
 namespace RGB.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogService logService;
@@ -19,6 +22,20 @@ namespace RGB.Controllers
             this.logService = logService;
             this.ledControlService = ledControlService;
             this.audioService = audioService;
+        }
+        private RoleManager RoleManager {
+            get {
+                return HttpContext.GetOwinContext().GetUserManager<RoleManager>();
+            }
+        }
+      //  [Authorize(Roles ="admin")]
+        public string Test()
+        {
+            if (User.IsInRole("admin"))
+            {
+                return "hello admin";
+            }
+            return "hello user";
         }
         public ActionResult Index()
         {
